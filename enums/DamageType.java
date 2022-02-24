@@ -1,0 +1,5 @@
+package enums;
+
+public enum DamageType {
+	FIRE, WATER, EARTH, WIND, ICE, ELECTRIC, ACID, POISON, SLAG, LIGHT, DARK, PSYCHIC, PIERCING, SLASHING, BLUDGEON;
+}
