@@ -1,10 +1,11 @@
 package character;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.Scanner;
-import character.PlayerCharacter;
+
 public class PlayerCharacterCreator {
     private Scanner kb;
     private Random r = new Random();
@@ -15,10 +16,22 @@ public class PlayerCharacterCreator {
     private ArrayList<Integer> rollDice(){
         ArrayList <Integer> result = new ArrayList<>();
         for(int i = 0; i < 6; i++){
-            result.add(r.nextInt(10)+8);
+            result.add(r.nextInt(10)+20);
         }
         result.trimToSize();
         return result;
+    }
+
+    private void printAttributeScores(ArrayList <Integer> scores){
+        String str = "" + scores.get(0);
+        for(int i = 1; i < scores.size(); i++){
+            str += "," + scores.get(i);
+        }
+        System.out.println(str);
+    }
+
+    private boolean isValidAttributeScore(ArrayList <Integer> scores, int chosenScore){
+        return scores.indexOf(chosenScore) != -1;
     }
 
     public PlayerCharacter createCharacter(){
@@ -29,21 +42,34 @@ public class PlayerCharacterCreator {
         System.out.println("What is your name: ");
         name = kb.nextLine();
         
-        //Do stuff
         ArrayList <Integer> scores = rollDice();
-        for(int i = 0; i < 6; i++){
-            System.out.println(scores.get(i));
-        }
+        
+        System.out.println("");
+
         String Attributes [] = {"Strength", "Dexterity", "Constitution", "Spirit", "Intellect", "Luck"};
         for(String attName: Attributes) {
-        	System.out.println("Enter your attribute score for " + attName + ": ");
-        	att = kb.nextInt(); kb.nextLine();
+            do{
+                printAttributeScores(scores);
+                System.out.println("Enter your attribute score for " + attName + ": ");
+                att = kb.nextInt(); kb.nextLine();
+            }while(!isValidAttributeScore(scores,att));
+        	
         	attributeHashtable.put(attName, att);
+            scores.remove(scores.indexOf(att));
         }
         attributeHashtable.put("HP",attributeHashtable.get("Constitution") * attributeHashtable.get("Spirit") + 20);
         attributeHashtable.put("MP",(int)(attributeHashtable.get("Intellect")/5));
+
+        char choice = ' ';
+        PlayerCharacter pc = new PlayerCharacter(name,attributeHashtable);
+        System.out.println(pc.toString());
+
+        do{
+            System.out.println("Do you wish to continue on your adventure?\n(y)es | (n)o\n");
+            choice = kb.next().charAt(0); kb.nextLine();
+        }while(choice != 'y' && choice != 'n');
         
-        return new PlayerCharacter(name,attributeHashtable);
+        return (choice == 'y') ? pc : createCharacter(); 
     }
     
     public static void main(String [] args) {

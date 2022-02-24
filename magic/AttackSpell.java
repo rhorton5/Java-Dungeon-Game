@@ -19,8 +19,6 @@ public class AttackSpell extends Spells implements DamageDeal{
 		this.maxDamage = maxDamage;
 		this.criticalModifier = criticalModifier;
 		this.damageType = damageType;
-		
-		// TODO Auto-generated constructor stub
 	}
 	
 	public DamageType getDamageType() {

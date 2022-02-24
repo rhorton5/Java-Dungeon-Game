@@ -14,9 +14,10 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 	private int STR, DEX, CON, SPR, INT, LCK;
 	private String name;
 	private final Random r = new Random();
-	private Armor chest, head, rArm, lArm, rLeg, lLeg;
+	private Armor armor;
 	private Weapon wpn;
 	private ArrayList <Spells> spellList = new ArrayList<Spells>();
+	private int exp;
 	
 	private int initiative = 0;
 	
@@ -56,32 +57,8 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 		this.wpn = wpn;
 	}
 	
-	public void setArmor(String location, Armor armor) {
-		switch(location.toLowerCase()) {
-		case "head": head = armor; break;
-		case "chest": chest = armor; break;
-		case "rarm": rArm = armor; break;
-		case "larm": lArm = armor; break;
-		case "lleg": lLeg = armor; break;
-		case "rleg": rLeg = armor; break;
-		}
-	}
-	
-	private Armor getHitLocation() {
-		int roll = r.nextInt(9);
-		//0-1 head, 2-5 chest, 6 lArm, 7 rArm, 8 lLeg, 9 rLeg
-		if(roll <= 1)
-			return head;
-		if(roll >= 2 && roll < 6)
-			return chest;
-		if(roll == 6)
-			return lArm;
-		if(roll == 8)
-			return rArm;
-		if(roll == 9)
-			return lLeg;
-		else
-			return rLeg;
+	public void setArmor(Armor armor) {
+		this.armor = armor;
 	}
 	
 	public int getHP() {return this.HP;}
@@ -105,18 +82,21 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 	}
 	
 	public int takeDamage(int dmg, DamageType type) {
-		if(getHitLocation() != null) dmg = chest.takeDamage(dmg, type);
-		if(type != DamageType.SLASHING && type != DamageType.PIERCING && type != DamageType.BLUDGEON) 
+		dmg = (armor != null) ? armor.takeDamage(dmg,type) : dmg; //Check if armor is equipped.  Resolve that first.
+		if(type != DamageType.SLASHING && type != DamageType.PIERCING && type != DamageType.BLUDGEON) //Magic attacks use Spirit to reduce damage
 			dmg -= SPR;
-		else 
+		else  //Physical attacks use Constitution to reduce damage
 			dmg -= CON;
+		if(dmg < 0) //If damage is less than 0, then dmg is 0 (otherwise, HP is restored)
+			dmg = 0;
+		
 		HP -= dmg;
 		return dmg;
 		
 	}
 	
 	public void rollInitiative(int modifiers) {
-		initiative = r.nextInt(19) + 1 + getModifiers(DEX) + modifiers;
+		initiative = r.nextInt(19) + 1 + getModifiers(DEX) + modifiers; //d20 + DEX + modifiers
 	}
 	
 	public int getInitaitive() {
@@ -133,6 +113,30 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 	
 	public void setSpells(ArrayList<Spells> spellList) {
 		this.spellList = spellList;
+	}
+
+	public int getMeleeAttackRollModifiers(int modifiers){
+		return getModifiers(STR) + modifiers;
+	}
+
+	public String getName(){
+		return name;
+	}
+
+	public String getWeaponName(){
+		return (wpn != null) ? wpn.getName() : "Unarmed";
+	}
+
+	public DamageType getWeaponDamageType(){
+		return wpn.getDamageType();
+	}
+
+	public void setEXP(int exp){
+		this.exp = exp;
+	}
+
+	public int getEXP(){
+		return exp;
 	}
 
 	@Override

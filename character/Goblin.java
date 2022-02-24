@@ -7,21 +7,20 @@ import interfaces.Damage;
 
 public class Goblin extends TemplateCharacter implements Damage {
 
+	private int STR = 12, DEX = 15, CON = 8, SPR = 6, INT = 10, LCK = 10;
 	public Goblin(String name) {
 		super(name);
 		Hashtable<String,Integer> attributes = new Hashtable<String,Integer>();
-		attributes.put("HP", 25);
+		attributes.put("HP", 1);
 		attributes.put("MP", 0);
-		attributes.put("Strength", 15);
-		attributes.put("Dexterity", 17);
-		attributes.put("Agility", 16);
-		attributes.put("Constitution", 12);
-		attributes.put("Resistance", 12);
-		attributes.put("Intellect", 8);
-		attributes.put("Wisdom", 8);
-		attributes.put("Charisma", 10);
-		attributes.put("Luck", 10);
+		attributes.put("Strength", STR);
+		attributes.put("Dexterity", DEX);
+		attributes.put("Constitution", CON);
+		attributes.put("Spirit", SPR);
+		attributes.put("Intellect", INT);
+		attributes.put("Luck", LCK);
 		super.setAttributes(attributes);
+		super.setEXP(150);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -40,11 +39,4 @@ public class Goblin extends TemplateCharacter implements Damage {
 		}
 		return 0;
 	}
-	
-	public static void main(String [] args) {
-		Goblin g = new Goblin("Goblin");
-		System.out.println(g.toString());
-		
-	}
-
 }
