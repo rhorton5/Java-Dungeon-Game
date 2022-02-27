@@ -11,7 +11,7 @@ public class Goblin extends TemplateCharacter implements Damage {
 	public Goblin(String name) {
 		super(name);
 		Hashtable<String,Integer> attributes = new Hashtable<String,Integer>();
-		attributes.put("HP", 1);
+		attributes.put("HP", 25);
 		attributes.put("MP", 0);
 		attributes.put("Strength", STR);
 		attributes.put("Dexterity", DEX);
