@@ -24,15 +24,16 @@ public class AttackSpell extends Spells implements DamageDeal{
 	public DamageType getDamageType() {
 		return damageType;
 	}
-	
-	public String getName() {
-		return name;
-	}
 
 	@Override
 	public int dealDamage(boolean criticalHit) {
 		int dmg = r.nextInt(maxDamage-minDamage)+minDamage;
 		return (criticalHit) ? (int)(dmg * criticalModifier) : dmg;
 			
+	}
+
+	@Override
+	public String getSpellType() {
+		return "Attack";
 	}
 }

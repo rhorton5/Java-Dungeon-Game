@@ -1,10 +1,14 @@
 package character;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.Scanner;
+
+import enums.DamageType;
+import magic.AttackSpell;
+import magic.HealingSpell;
+import magic.Spells;
 
 public class PlayerCharacterCreator {
     private Scanner kb;
@@ -57,7 +61,7 @@ public class PlayerCharacterCreator {
         	attributeHashtable.put(attName, att);
             scores.remove(scores.indexOf(att));
         }
-        attributeHashtable.put("HP",attributeHashtable.get("Constitution") * attributeHashtable.get("Spirit") + 20);
+        attributeHashtable.put("HP",attributeHashtable.get("Constitution") + attributeHashtable.get("Spirit") + 20);
         attributeHashtable.put("MP",(int)(attributeHashtable.get("Intellect")/5));
 
         char choice = ' ';
@@ -69,12 +73,13 @@ public class PlayerCharacterCreator {
             choice = kb.next().charAt(0); kb.nextLine();
         }while(choice != 'y' && choice != 'n');
         
+        Spells as1 = new AttackSpell("Thunder", 1, 10, 25, 2.5, DamageType.ELECTRIC);
+        Spells as2 = new AttackSpell("Fireball", 1, 10, 25, 2.5, DamageType.FIRE);
+        Spells hs1 = new HealingSpell("Cure", 1, 0.35);
+        pc.addSpell(as1);
+        pc.addSpell(as2);
+        pc.addSpell(hs1);
+
         return (choice == 'y') ? pc : createCharacter(); 
-    }
-    
-    public static void main(String [] args) {
-    	PlayerCharacterCreator pcc = new PlayerCharacterCreator(new Scanner(System.in));
-    	PlayerCharacter pc = pcc.createCharacter();
-    	System.out.println(pc.toString());
     }
 }

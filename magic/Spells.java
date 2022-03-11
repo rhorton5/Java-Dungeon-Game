@@ -11,4 +11,5 @@ public abstract class Spells {
 	public int getMPCost() {return mpCost;}
 	public String getName() {return name;}
 	public void PrintSpellMenuOption() {System.out.printf("%s [%d MP]\n", name,mpCost);}
+	public abstract String getSpellType();
 }

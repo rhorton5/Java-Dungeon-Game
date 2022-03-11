@@ -1,27 +1,17 @@
 package character;
 
-import java.util.Hashtable;
+import java.util.Random;
 
 import enums.DamageType;
-import interfaces.Damage;
+import weapon.Weapon;
 
-public class Goblin extends TemplateCharacter implements Damage {
+public class Goblin extends Enemy {
+	private Random r = new Random();
+	private Weapon wpn = new Weapon("Shiv", 7, 15, DamageType.PIERCING, 1.5, 2, 15);
 
-	private int STR = 12, DEX = 15, CON = 8, SPR = 6, INT = 10, LCK = 10;
 	public Goblin(String name) {
-		super(name);
-		Hashtable<String,Integer> attributes = new Hashtable<String,Integer>();
-		attributes.put("HP", 25);
-		attributes.put("MP", 0);
-		attributes.put("Strength", STR);
-		attributes.put("Dexterity", DEX);
-		attributes.put("Constitution", CON);
-		attributes.put("Spirit", SPR);
-		attributes.put("Intellect", INT);
-		attributes.put("Luck", LCK);
-		super.setAttributes(attributes);
-		super.setEXP(150);
-		// TODO Auto-generated constructor stub
+		super(name,25,0,12,15,8,6,10,10,150);
+		super.setWeapon(wpn);
 	}
 
 	@Override
@@ -38,5 +28,20 @@ public class Goblin extends TemplateCharacter implements Damage {
 			case "poison": return 0.5;
 		}
 		return 0;
+	}
+
+	@Override
+	public String decideAction() {
+		//Goblin under 15 HP will have a 25% chance to flee.
+		if(getHP() < 5){
+			if(r.nextInt(0,99) <= 25)
+				return "flee";
+		}
+		return "weapon";
+	}
+
+	@Override
+	public int getGoldDrop(int LCK) {
+		return (r.nextInt(0,99) + LCK >= 50) ? 10 : (int)(10 * 2.25);
 	}
 }

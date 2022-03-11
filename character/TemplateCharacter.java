@@ -70,6 +70,7 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 	public int getConstitution() {return CON;}
 	public int getIntellect() {return INT;}
 	public int getLuck() {return LCK;}
+	public int getSpirit(){return SPR;}
 	
 	public boolean isAlive() {
 		return HP > 0;
@@ -119,6 +120,10 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 		return getModifiers(STR) + modifiers;
 	}
 
+	public int getMagicAttackModifiers(int modifiers){
+		return getModifiers(INT) + modifiers;
+	}
+
 	public String getName(){
 		return name;
 	}
@@ -137,6 +142,15 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 
 	public int getEXP(){
 		return exp;
+	}
+
+	public Spells getSpell(String spellName){
+		spellName = spellName.toLowerCase();
+		for(Spells s: spellList){
+			if(spellName.equals(s.getName().toLowerCase()))
+				return s;
+		}
+		return null;
 	}
 
 	@Override
