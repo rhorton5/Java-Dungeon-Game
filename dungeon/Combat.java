@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
+import character.Cultist;
 import character.Enemy;
 import character.Goblin;
 import character.PlayerCharacter;
@@ -27,23 +28,21 @@ public class Combat {
     }
 
     private void spawnEnemies(){
-        for(int i = 0; i < 3; i++){
+        for(int i = 0; i < 2; i++){
             characterList.add(
-                new Goblin(String.format("Goblin #%d",i))
+                new Cultist(String.format("Cultist #%d",i))
             );
         }
     }
 
     private void rollInitiative(){
-        for(TemplateCharacter c: characterList){
-            c.rollInitiative(0);
-        }
+        characterList.stream().forEach(c -> c.rollInitiative(0));
     }
 
     private void displayTurnOrder(){
-        for(TemplateCharacter c: characterList){
-            System.out.printf("[%d] %s\n",c.getInitaitive(),c.getName());
-        }
+        characterList.stream().forEach(
+            c -> System.out.printf("[%d] %s\n",c.getInitaitive(),c.getName())
+        );
     }
 
     private void endTurn(){
@@ -75,28 +74,29 @@ public class Combat {
             String spellName = kb.nextLine();
             chosenSpell = pc.getSpell(spellName);
         }while(chosenSpell == null);
-        if(chosenSpell.getSpellType().equals("Attack")){
-            //Refactor later.
-            System.out.println("Who would you like to attack: ");
-            String targetName = kb.nextLine();
-            int targetIndex = -1;
-            for(int i = 0; i < characterList.size(); i++){
-                if(targetName.equals(characterList.get(i).getName())){
-                    targetIndex = i;
+        if(pc.castSpell(chosenSpell)){
+            if(chosenSpell.getSpellType().equals("Attack")){
+                //Refactor later.
+                System.out.println("Who would you like to attack: ");
+                String targetName = kb.nextLine();
+                int targetIndex = -1;
+                for(int i = 0; i < characterList.size(); i++){
+                    if(targetName.equals(characterList.get(i).getName())){
+                        targetIndex = i;
+                    }
                 }
+                if(targetIndex == -1)
+                    return;
+                magicAttack(pc,(AttackSpell) chosenSpell,characterList.get(targetIndex));
+            }if(chosenSpell.getSpellType().equals("Healing")){
+                HealingSpell hs = (HealingSpell) chosenSpell;
+                int hp = hs.restoreHP(pc.getMaxHP(), pc.getSpirit());
+                pc.recoverHP(hp,false);
+                System.out.printf("%s has restored %d health!!\n",pc.getName(),hp);
             }
-            if(targetIndex == -1)
-                return;
-            magicAttack(pc,(AttackSpell) chosenSpell,characterList.get(targetIndex));
-        
+        }else{
+            System.out.println("You cannot cast this spell.");
         }
-        if(chosenSpell.getSpellType().equals("Healing")){
-            HealingSpell hs = (HealingSpell) chosenSpell;
-            int hp = hs.restoreHP(pc.getMaxHP(), pc.getSpirit());
-            pc.recoverHP(hp,false);
-            System.out.printf("%s has restored %d health!!\n",pc.getName(),hp);
-        }
-
     }
 
     private void meleeAttack(TemplateCharacter attacker, TemplateCharacter target){
@@ -147,6 +147,18 @@ public class Combat {
             case "weapon": meleeAttack(attacker,pc); break;
             case "flee": enemyFlee(attacker); break;
         }
+        if(action.contains("spell - ")){
+            String spellName = action.substring(action.indexOf('-')+1).trim();
+            Spells spell = attacker.getSpell(spellName);
+            if(spell.getSpellType().equals("Attack")){
+                magicAttack(attacker,(AttackSpell) spell,pc);
+            }else if(spell.getSpellType().equals("Healing")){
+                HealingSpell hs = (HealingSpell) spell;
+                int hp = hs.restoreHP(attacker.getMaxHP(), attacker.getSpirit());
+                attacker.recoverHP(hp, false);
+                System.out.printf("%s has recovered %d health!!\n",attacker.getName(),hp);
+            }
+        }
         endTurn();
     }
 
@@ -162,20 +174,21 @@ public class Combat {
             if(characterList.get(0) != pc){
                 decideEnemyAttack();
             }else{
-                displayTurnOrder();
-                System.out.println("[1] Attack [2] Magic [3] Items [4] Stats [q] Escape\nWhat would you like to do?");
-                pc.printOverworldStats();
-                choice = kb.next().charAt(0); kb.nextLine();
-                switch(choice){
-                    case '1': turnMade = true; attackMenu(kb); break;
-                    case '2': turnMade = true; magicMenu(kb); break;
-                    case '3': turnMade = true; break;
-                    case '4': break;
+                while(pc.hasTurnsLeft()){
+                    displayTurnOrder();
+                    pc.printOverworldStats();
+                    System.out.println("[1] Attack [2] Magic [3] Items [4] Stats [q] Escape\nWhat would you like to do?");
+                    choice = kb.next().charAt(0); kb.nextLine();
+                    switch(choice){
+                        case '1': turnMade = true; attackMenu(kb); break;
+                        case '2': turnMade = true; magicMenu(kb); break;
+                        case '3': turnMade = true; break;
+                        case '4': break;
+                }
             }
             if(turnMade)
                 endTurn();
-            }
-            
+            }  
         }while(choice != 'q' && pc.isAlive() && characterList.size() > 1);
         
         if(characterList.size() == 1){

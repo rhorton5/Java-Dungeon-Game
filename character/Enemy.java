@@ -8,7 +8,7 @@ public abstract class Enemy extends TemplateCharacter{
         super(name);
         Hashtable<String,Integer> attributes = new Hashtable<String,Integer>();
 		attributes.put("HP", HP);
-		attributes.put("MP", 0);
+		attributes.put("MP", MP);
 		attributes.put("Strength", STR);
 		attributes.put("Dexterity", DEX);
 		attributes.put("Constitution", CON);

@@ -105,8 +105,7 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 	}
 	
 	public int recoverHP(int points,boolean overheal) {
-		HP += points;
-		if(HP > maxHP && !overheal) HP = maxHP;
+		HP = (HP + points <= maxHP && !overheal) ? HP + points : maxHP;
 		return points;
 	}
 	
@@ -151,6 +150,18 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 				return s;
 		}
 		return null;
+	}
+
+	public boolean castSpell(Spells s){
+		if(MP - s.getMPCost() >= 0){
+			MP -= s.getMPCost();
+			return true;
+		}
+		return false;
+	}
+
+	public void restoreMP(int points){
+		MP = (MP + points <= maxMP) ? MP + points : maxMP;
 	}
 
 	@Override

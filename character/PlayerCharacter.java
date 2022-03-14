@@ -19,6 +19,9 @@ public class PlayerCharacter extends TemplateCharacter implements Damage {
 	private int exp = 0;
 	private int nextLevel = 1500;
 
+	private boolean guarding = false;
+	private int turnsAllowed = 2; //Number of turns a player can make per turn.
+
 	public PlayerCharacter(String name, Hashtable<String, Integer> attributes) {
 		super(name, attributes);
 		setCarryingCapacity();
@@ -42,10 +45,18 @@ public class PlayerCharacter extends TemplateCharacter implements Damage {
 		if(super.isAlive()) {
 			int hp = super.getHP();
 			int maxHP = super.getMaxHP();
-			int totalHPBar = maxHP / 20 + 1;
-			int fullHPBar = (hp == maxHP) ? totalHPBar : hp / 20;
+			int totalHPBar = maxHP / 10 + 1;
+			int fullHPBar = (hp == maxHP) ? totalHPBar : hp / 10;
 			int emptyHPBar = totalHPBar - fullHPBar;
 			System.out.printf("HP: [%s%s] [%d/%d]\n","=".repeat(fullHPBar),"-".repeat(emptyHPBar),hp,maxHP);
+
+			int mp = getMP();
+			int maxMP = getMaxMP();
+			int totalMPBar = maxMP + 1;
+			int fullMPBar = (mp == maxMP) ? totalMPBar : mp;
+			int emptyMPBar = totalMPBar - fullMPBar;
+			System.out.printf("MP: [%s%s] [%d/%d]\n","=".repeat(fullMPBar),"-".repeat(emptyMPBar),mp,maxMP);
+			System.out.printf("EXP: %d/%d\n",exp,nextLevel);
 		}
 		
 	}
@@ -113,7 +124,7 @@ public class PlayerCharacter extends TemplateCharacter implements Damage {
 		exp = (int)(exp * expMultiplier);
 		this.exp += exp;
 		System.out.println(super.getName() + " gained " + exp + " experience points!");
-		if(this.exp == this.nextLevel){
+		if(this.exp >= this.nextLevel){
 			this.nextLevel *= 2;
 			System.out.println("You have gained a level!");
 		}		
@@ -121,14 +132,27 @@ public class PlayerCharacter extends TemplateCharacter implements Damage {
 
 	@Override
 	public int compareTo(TemplateCharacter o) {
-		// TODO Auto-generated method stub
 		return this.getInitaitive() - o.getInitaitive();
 	}
 
 	@Override
 	public double getElementalResistance(DamageType type) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
+	public int takeDamage(int dmg, DamageType type){
+		dmg = (guarding) ? dmg/2 : dmg;
+		return super.takeDamage(dmg,type);
+		
+	}
+
+	public boolean hasTurnsLeft(){
+		turnsAllowed--;
+		if(turnsAllowed < 0){
+			turnsAllowed = 2;
+			return false;
+		}
+		return true;
+	}
 }

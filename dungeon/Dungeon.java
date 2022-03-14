@@ -55,7 +55,7 @@ public class Dungeon {
 	}
 	
 	public boolean startRandomEncounter() {
-		if(turnsSinceCombat >= 5) {
+		/*if(turnsSinceCombat >= 5) {
 			Random r = new Random();
 			double encounterRate = 0.05 * (turnsSinceCombat - 4);
 			boolean startCombat = r.nextDouble() + encounterRate >= 1.00;
@@ -65,7 +65,8 @@ public class Dungeon {
 			}
 		}
 		turnsSinceCombat++;
-		return false;
+		return false;*/
+		return true;
 		
 	}
 	
