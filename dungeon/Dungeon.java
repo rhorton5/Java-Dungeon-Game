@@ -55,7 +55,7 @@ public class Dungeon {
 	}
 	
 	public boolean startRandomEncounter() {
-		/*if(turnsSinceCombat >= 5) {
+		if(turnsSinceCombat >= 5) {
 			Random r = new Random();
 			double encounterRate = 0.05 * (turnsSinceCombat - 4);
 			boolean startCombat = r.nextDouble() + encounterRate >= 1.00;
@@ -65,18 +65,15 @@ public class Dungeon {
 			}
 		}
 		turnsSinceCombat++;
-		return false;*/
-		return true;
-		
+		return false;
 	}
 	
 	public void dungeonOverworldMenu(Scanner kb) {
 		
 		char choice = 0;
-		Combat combat;
 		do {
 			if(startRandomEncounter()) {
-				combat = new Combat(pc,1,kb); //Could be written better.  Make a method to initialize combat.
+				Combat combat = new Combat(pc,1,kb); //Could be written better.  Make a method to initialize combat.
 			}
 			if(pc.isAlive()) {
 				printDungeon();
@@ -90,38 +87,8 @@ public class Dungeon {
 				case 'a': movePC(-1,0); break;
 				case 'm': pc.printSpells(); break;
 				}
-			}else {
+			}else
 				System.out.println("You have perished...");
-				return;
-			}
-				
 		}while(choice != 'q' && pc.isAlive());
 	}
-	public static void main(String [] args) throws FileNotFoundException {
-		MapLoader mp = new MapLoader();
-		char [] [] map = mp.loadMap("test2.DUNGEON");
-		Hashtable <String, Integer> att = new Hashtable<String,Integer>();
-		att.put("HP", 999);
-		att.put("MP", 5);
-		att.put("Strength", 12);
-		att.put("Dexterity", 12);
-		att.put("Agility", 12);
-		att.put("Constitution", 12);
-		att.put("Resistance", 12);
-		att.put("Intellect", 12);
-		att.put("Wisdom", 12);
-		att.put("Charisma", 12);
-		att.put("Luck", 12);
-		ArrayList<Spells> spellList = new ArrayList<Spells>();
-		spellList.add(new AttackSpell("Fireball",1,15,25,1.5,DamageType.FIRE));
-		spellList.add(new AttackSpell("Thunder",1,15,25,1.5,DamageType.ELECTRIC));
-		PlayerCharacter pc = new PlayerCharacter("Name",att);
-		pc.setSpells(spellList);
-		Dungeon d = new Dungeon(map,1,2,pc);
-		Scanner kb = new Scanner(System.in);
-		d.dungeonOverworldMenu(kb);
-		kb.close();
-	}
-	
-	
 }

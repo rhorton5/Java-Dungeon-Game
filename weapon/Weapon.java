@@ -27,13 +27,4 @@ public class Weapon extends Items{
 	public DamageType getDamageType() {
 		return damageType;
 	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Weapon rapier = new Weapon("Rapier",5,15,DamageType.PIERCING,2,5,35);
-		for(int i = 0; i < 10; i++)
-			System.out.println(rapier.getName() + " Dealt " + rapier.dealDamage(18, false) + " Damage!!");
-
-	}
-
 }

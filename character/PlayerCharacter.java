@@ -16,8 +16,9 @@ public class PlayerCharacter extends TemplateCharacter implements Damage {
 	private ArrayList<Items> inventory = new ArrayList<>();
 	private double carryingCapacity = 0.0; //How much can the hero carry during the game.
 
+	int level = 1;
 	private int exp = 0;
-	private int nextLevel = 1500;
+	private int nextLevel = 250;
 
 	private boolean guarding = false;
 	private int turnsAllowed = 2; //Number of turns a player can make per turn.
@@ -108,6 +109,19 @@ public class PlayerCharacter extends TemplateCharacter implements Damage {
 		}		
 	}
 
+	public Hashtable<String,Integer> getAttributeHashtable(){
+		Hashtable<String,Integer> res = new Hashtable<>();
+		res.put("HP",getMaxHP());
+		res.put("MP",getMaxMP());
+		res.put("Strength",getStrength());
+		res.put("Dexterity",getDexterity());
+		res.put("Constitution",getConstitution());
+		res.put("Spirit",getSpirit());
+		res.put("Intellect",getIntellect());
+		res.put("Luck",getLuck());
+		return res;
+	}
+
 	public void addGold(int amount){
 		gold += amount;
 	}
@@ -129,6 +143,10 @@ public class PlayerCharacter extends TemplateCharacter implements Damage {
 			System.out.println("You have gained a level!");
 		}		
 	}
+
+	public int getLevel(){return level;}
+
+	public void incrementLevel(){level++;}
 
 	@Override
 	public int compareTo(TemplateCharacter o) {

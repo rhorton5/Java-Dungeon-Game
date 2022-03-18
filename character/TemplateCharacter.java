@@ -116,10 +116,12 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 	}
 
 	public int getMeleeAttackRollModifiers(int modifiers){
+		System.out.printf("%s attacks with %s!\n",this.name,this.wpn.getName());
 		return getModifiers(STR) + modifiers;
 	}
 
 	public int getMagicAttackModifiers(int modifiers){
+		System.out.printf("%s cast a spell!\n",this.name);
 		return getModifiers(INT) + modifiers;
 	}
 

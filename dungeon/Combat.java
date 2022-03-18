@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import character.Cultist;
 import character.Enemy;
+import character.EnemyFactory;
 import character.Goblin;
 import character.PlayerCharacter;
 import character.TemplateCharacter;
@@ -28,11 +29,8 @@ public class Combat {
     }
 
     private void spawnEnemies(){
-        for(int i = 0; i < 2; i++){
-            characterList.add(
-                new Cultist(String.format("Cultist #%d",i))
-            );
-        }
+        EnemyFactory ef = new EnemyFactory();
+        characterList.addAll(ef.createEnemyParty(level));
     }
 
     private void rollInitiative(){
@@ -174,7 +172,7 @@ public class Combat {
             if(characterList.get(0) != pc){
                 decideEnemyAttack();
             }else{
-                while(pc.hasTurnsLeft()){
+                while(pc.hasTurnsLeft() && pc.isAlive() && characterList.size() > 1 && choice != 'q'){
                     displayTurnOrder();
                     pc.printOverworldStats();
                     System.out.println("[1] Attack [2] Magic [3] Items [4] Stats [q] Escape\nWhat would you like to do?");
@@ -191,10 +189,9 @@ public class Combat {
             }  
         }while(choice != 'q' && pc.isAlive() && characterList.size() > 1);
         
-        if(characterList.size() == 1){
+        if(characterList.size() == 1 && pc.isAlive()){
             System.out.println("You were victorious!!");
             pc.addEXP(winningEXP);
-            
         }
     }
 }

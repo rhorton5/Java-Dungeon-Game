@@ -82,4 +82,34 @@ public class PlayerCharacterCreator {
 
         return (choice == 'y') ? pc : createCharacter(); 
     }
+    
+    public PlayerCharacter leveUpPlayerCharacter(PlayerCharacter pc, Scanner kb){
+        System.out.printf("%s has gained a level!!\n",pc.getName());
+        int level = pc.getLevel() + 1;
+        int newStatScores = 10 + (level/5);
+        Hashtable <String,Integer> scoreAdjustments = pc.getAttributeHashtable();
+        System.out.println(pc.toString() + "\nPlease enter the attribute names and how many points you want to add. Example: Strength 4\n Do one per line.");
+        while(newStatScores > 0){
+            System.out.println("You have " + newStatScores + " attribute points left.");
+            String attributeData [] = kb.nextLine().split(" ");
+            String attributeName = attributeData[0].trim().substring(0,1).toUpperCase().substring(1).toLowerCase();
+            int attributeScore = Integer.parseInt(attributeData[1]);
+            if(attributeScore > newStatScores || attributeScore <= 0)
+                System.out.println("Invaid score amount.");
+            else{
+                if(scoreAdjustments.getOrDefault(attributeName, null) == null)
+                    scoreAdjustments.put(attributeName,attributeScore);
+                else
+                    scoreAdjustments.replace(attributeName, scoreAdjustments.get(attributeName) + attributeScore);
+                newStatScores -= attributeScore;
+            }
+        }
+        scoreAdjustments.replace("HP", pc.getMaxHP() + pc.getConstitution()/3 + pc.getSpirit()/2);
+        scoreAdjustments.replace("MP",pc.getMaxMP() + 1);
+        pc.setAttributes(scoreAdjustments);
+        System.out.println("These are your new stats!");
+        pc.toString();
+        return pc;
+
+    }
 }
