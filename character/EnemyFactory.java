@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import character.Enemy;
 public class EnemyFactory {
     private Enemy createEnemy(String enemyName){
         switch(enemyName.toLowerCase()){

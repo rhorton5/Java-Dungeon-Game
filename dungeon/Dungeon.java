@@ -1,21 +1,14 @@
 package dungeon;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Random;
 import java.util.Scanner;
 
 import character.PlayerCharacter;
-import enums.DamageType;
-import magic.AttackSpell;
-import magic.Spells;
-import maps.MapLoader;
-
 public class Dungeon {
-	private final char wall = 'x', tile = '-', heroTile = 'H';
+	private final char wall = 'x', tile = '-', heroTile = 'H', exit = 'E';
 	private int startPosX, startPosY, turnsSinceCombat = 0;
 	private PlayerCharacter pc;
 	private char [][] map;
+	private boolean completedDungeon = false;
 	
 	public Dungeon(char [][] map, int startPosX, int startPosY, PlayerCharacter pc) {
 		this.map = map;
@@ -47,6 +40,7 @@ public class Dungeon {
 			System.out.println("There's a wall there...");
 		}
 		else {
+			completedDungeon = map[pcY][pcX] == exit;
 			map[pcY][pcX] = heroTile;
 			map[oldPCY][oldPCX] = tile;
 			pc.moveCharacter(x, y);
@@ -75,6 +69,10 @@ public class Dungeon {
 			if(startRandomEncounter()) {
 				Combat combat = new Combat(pc,1,kb); //Could be written better.  Make a method to initialize combat.
 			}
+			if(completedDungeon){
+				System.out.println("Congradulation, you have made it through the dungeon!!!");
+				return;
+			}
 			if(pc.isAlive()) {
 				printDungeon();
 				pc.printOverworldStats();
@@ -86,6 +84,7 @@ public class Dungeon {
 				case 'd': movePC(1,0); break;
 				case 'a': movePC(-1,0); break;
 				case 'm': pc.printSpells(); break;
+				case 'v': System.out.println(pc.toString() + "\nPress enter to continue..."); break;
 				}
 			}else
 				System.out.println("You have perished...");

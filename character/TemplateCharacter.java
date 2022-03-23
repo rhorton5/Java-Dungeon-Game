@@ -8,6 +8,7 @@ import interfaces.Damage;
 import items.Armor;
 import weapon.Weapon;
 import magic.Spells;
+import enums.TextColor;
 
 public abstract class TemplateCharacter implements Comparable<TemplateCharacter>, Damage {
 	private int HP, maxHP, MP, maxMP;
@@ -97,7 +98,7 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 	}
 	
 	public void rollInitiative(int modifiers) {
-		initiative = r.nextInt(19) + 1 + getModifiers(DEX) + modifiers; //d20 + DEX + modifiers
+		initiative = r.nextInt(1,20) + getModifiers(DEX) + modifiers; //d20 + DEX + modifiers
 	}
 	
 	public int getInitaitive() {
@@ -164,6 +165,22 @@ public abstract class TemplateCharacter implements Comparable<TemplateCharacter>
 
 	public void restoreMP(int points){
 		MP = (MP + points <= maxMP) ? MP + points : maxMP;
+	}
+
+	String getTextColors(String str){
+		if(HP == maxHP) return TextColor.GREEN.changeColor(str);
+		else if(HP >= maxHP/4) return TextColor.YELLOW.changeColor(str);
+		return TextColor.RED.changeColor(str);
+	}
+
+	public String displayInitiativeOrder(){
+		String init = String.format("[%d] %s",initiative,name);
+		return getTextColors(init);
+		
+	}
+
+	public void setName(String name){
+		this.name = name;
 	}
 
 	@Override

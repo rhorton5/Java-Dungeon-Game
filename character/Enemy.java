@@ -21,4 +21,7 @@ public abstract class Enemy extends TemplateCharacter{
 
     public abstract String decideAction();
     public abstract int getGoldDrop(int LCK);
+	public String getTargettingName(){
+		return super.getTextColors(super.getName());
+	}
 }

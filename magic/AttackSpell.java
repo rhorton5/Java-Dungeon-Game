@@ -9,7 +9,6 @@ public class AttackSpell extends Spells implements DamageDeal{
 
 	private int minDamage, maxDamage;
 	private DamageType damageType;
-	private String name;
 	private double criticalModifier;
 	private Random r = new Random();
 	

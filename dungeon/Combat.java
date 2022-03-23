@@ -6,12 +6,10 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import character.Cultist;
 import character.Enemy;
-import character.EnemyFactory;
-import character.Goblin;
 import character.PlayerCharacter;
 import character.TemplateCharacter;
+import character.EnemyFactory;
 import enums.DamageType;
 import magic.AttackSpell;
 import magic.HealingSpell;
@@ -22,6 +20,7 @@ public class Combat {
     private ArrayList <TemplateCharacter> characterList = new ArrayList<>();
     private PlayerCharacter pc;
     private Random r = new Random();
+
     public Combat(PlayerCharacter pc, int level, Scanner kb){
         this.level = level;
         this.pc = pc;
@@ -39,7 +38,7 @@ public class Combat {
 
     private void displayTurnOrder(){
         characterList.stream().forEach(
-            c -> System.out.printf("[%d] %s\n",c.getInitaitive(),c.getName())
+            c -> System.out.println(c.displayInitiativeOrder())
         );
     }
 
@@ -99,18 +98,19 @@ public class Combat {
 
     private void meleeAttack(TemplateCharacter attacker, TemplateCharacter target){
         int diceRoll = r.nextInt(19) + 1;
-        int attackScore = diceRoll + pc.getMeleeAttackRollModifiers(0);
+        int attackScore = diceRoll + attacker.getMeleeAttackRollModifiers(0);
         if(attackScore >= target.getArmorClass(false) || diceRoll == 20){
             int dmg = pc.dealDamage(diceRoll == 20);
             DamageType damageType = pc.getWeaponDamageType();
             targetTakesDamage(target,dmg,damageType);
         }else
             System.out.println(target.getName() + " dodged " + attacker.getName() + "'s attack...");
+        System.out.println(); // Clean space...
     }
 
     private void magicAttack(TemplateCharacter attacker, AttackSpell spell, TemplateCharacter target){
         int diceRoll = r.nextInt(19) + 1;
-        int attackScore = diceRoll + pc.getMagicAttackModifiers(0);
+        int attackScore = diceRoll + attacker.getMagicAttackModifiers(0);
         if(attackScore >= target.getArmorClass(false) || diceRoll == 20){
             int dmg = spell.dealDamage(diceRoll == 20) + attacker.getIntellect();
             DamageType damageType = spell.getDamageType();

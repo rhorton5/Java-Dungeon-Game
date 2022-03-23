@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import enums.DamageType;
-import interfaces.Damage;
 import items.Items;
 import magic.Spells;
 import weapon.Weapon;
 
-public class PlayerCharacter extends TemplateCharacter implements Damage {
+public class PlayerCharacter extends TemplateCharacter {
 
 	private int posX = 0, posY = 0; //Where the hero is in the dungeon?
 	private int gold = 150; //How much gold does the hero have during the journey
